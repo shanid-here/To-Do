@@ -129,7 +129,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                                 </select>
                             </div>
 
-                            <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-md border border-gray-100">
+                            <div className="flex items-center gap-1.5 bg-white px-1 py-1 rounded-md border border-gray-100">
                                 <Bell size={12} className="text-gray-400" />
                                 <input
                                     type="time"
