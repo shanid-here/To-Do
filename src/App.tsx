@@ -26,6 +26,34 @@ function App() {
   // Generate dynamic date string based on selectedDate
   const dateString = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }).toUpperCase();
 
+  const isDateInCurrentWeek = (date: Date) => {
+    const today = new Date();
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - today.getDay());
+    sunday.setHours(0, 0, 0, 0);
+
+    const saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
+    saturday.setHours(23, 59, 59, 999);
+
+    return date >= sunday && date <= saturday;
+  };
+
+  const isInCurrentWeek = isDateInCurrentWeek(selectedDate);
+
+  const handleCalendarClick = () => {
+    const dateInput = document.getElementById('calendar-picker') as HTMLInputElement;
+    if (dateInput) {
+      dateInput.showPicker();
+    }
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      selectDate(new Date(e.target.value));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white shadow-2xl rounded-3xl overflow-hidden h-[80vh] flex flex-col relative big-shadow">
@@ -34,6 +62,15 @@ function App() {
           <AddTodoScreen onAdd={addTodo} onCancel={closeAddScreen} />
         )}
 
+        {/* Hidden Date Picker */}
+        <input
+          id="calendar-picker"
+          type="date"
+          className="sr-only"
+          onChange={handleDateChange}
+          value={selectedDate.toISOString().split('T')[0]}
+        />
+
         {/* Header */}
         <div className="px-6 pt-10 pb-4">
           <div className="flex justify-between items-start mb-6">
@@ -41,7 +78,13 @@ function App() {
               <p className="text-xs text-gray-400 font-bold tracking-wider mb-1">{dateString}</p>
               <h1 className="text-3xl font-black text-black tracking-tight">To-Do List</h1>
             </div>
-            <Calendar className="text-gray-400" size={24} />
+            <button
+              onClick={handleCalendarClick}
+              className={`p-1 rounded-lg transition-colors ${!isInCurrentWeek ? 'text-blue-500 bg-blue-50' : 'text-gray-400 hover:bg-gray-50'}`}
+              title="Select Date"
+            >
+              <Calendar size={24} />
+            </button>
           </div>
 
           <CalendarStrip selectedDate={selectedDate} onSelectDate={selectDate} />

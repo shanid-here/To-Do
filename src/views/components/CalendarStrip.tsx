@@ -7,15 +7,16 @@ interface CalendarStripProps {
 
 export const CalendarStrip: React.FC<CalendarStripProps> = ({ selectedDate, onSelectDate }) => {
     const { days, dates, fullDates } = useMemo(() => {
-        const today = new Date();
-        const currentDayIndex = today.getDay(); // 0 is Sunday
         const daysArr = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
         const datesArr = [];
         const fullDatesArr: Date[] = [];
 
-        // Generate dates for current week (Sun-Sat)
-        const sunday = new Date(today);
-        sunday.setDate(today.getDate() - currentDayIndex);
+        // Generate dates for the week containing selectedDate (Sun-Sat)
+        const date = new Date(selectedDate);
+        const dayOfWeek = date.getDay(); // 0 is Sunday
+
+        const sunday = new Date(date);
+        sunday.setDate(date.getDate() - dayOfWeek);
 
         for (let i = 0; i < 7; i++) {
             const d = new Date(sunday);
@@ -25,7 +26,7 @@ export const CalendarStrip: React.FC<CalendarStripProps> = ({ selectedDate, onSe
         }
 
         return { days: daysArr, dates: datesArr, fullDates: fullDatesArr };
-    }, []);
+    }, [selectedDate]);
 
     const isSameDate = (d1: Date, d2: Date) => {
         return d1.getDate() === d2.getDate() &&
